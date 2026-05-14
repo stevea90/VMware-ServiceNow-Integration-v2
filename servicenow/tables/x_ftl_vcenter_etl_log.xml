@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_log
+  Scope: x_ftl_vcenter_etl
+
+  Custom log table for all ETL integration logging.
+  Written to by VCenterLogger. Replaces sys_log where more structured
+  querying, retention policy, and report access is required.
+
+  Retention: Records older than 90 days should be purged via a scheduled job.
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <access>public</access>
+    <is_extendable>false</is_extendable>
+    <label>vCenter ETL Log</label>
+    <name>x_ftl_vcenter_etl_log</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_class_name>sys_db_object</sys_class_name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<!-- level: DEBUG | INFO | WARN | ERROR -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Level</column_label>
+    <element>level</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_log</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- source: Script Include class name -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Source</column_label>
+    <element>source</element><internal_type>string</internal_type>
+    <max_length>100</max_length><name>x_ftl_vcenter_etl_log</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- run_id: ETL run correlation ID -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Run ID</column_label>
+    <element>run_id</element><internal_type>string</internal_type>
+    <max_length>50</max_length><name>x_ftl_vcenter_etl_log</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- message: Log message text -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Message</column_label>
+    <element>message</element><internal_type>string</internal_type>
+    <max_length>1000</max_length><name>x_ftl_vcenter_etl_log</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- detail: JSON-serialised additional context (stack traces, payloads) -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Detail</column_label>
+    <element>detail</element><internal_type>string</internal_type>
+    <max_length>4000</max_length><name>x_ftl_vcenter_etl_log</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!--
+  Table: x_ftl_vcenter_etl_run
+  Run history / summary record per ETL execution.
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <access>public</access>
+    <is_extendable>false</is_extendable>
+    <label>vCenter ETL Run</label>
+    <name>x_ftl_vcenter_etl_run</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Run ID</column_label>
+    <element>run_id</element><internal_type>string</internal_type>
+    <max_length>50</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Status</column_label>
+    <element>status</element><internal_type>string</internal_type>
+    <max_length>20</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Started At</column_label>
+    <element>started_at</element><internal_type>glide_date_time</internal_type>
+    <max_length>40</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Ended At</column_label>
+    <element>ended_at</element><internal_type>glide_date_time</internal_type>
+    <max_length>40</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>vCenter</column_label>
+    <element>vcenter</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Current Phase</column_label>
+    <element>current_phase</element><internal_type>string</internal_type>
+    <max_length>50</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Stats JSON</column_label>
+    <element>stats_json</element><internal_type>string</internal_type>
+    <max_length>4000</max_length><name>x_ftl_vcenter_etl_run</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

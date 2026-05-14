@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_host_stg
+  Extends: x_ftl_vcenter_etl_staging_base
+  CMDB Target: cmdb_ci_esx_server
+  IRE Identifiers (priority): bios_uuid, moref (correlation_id), name
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <label>ESXi Host Staging</label>
+    <name>x_ftl_vcenter_etl_host_stg</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <super_class>x_ftl_vcenter_etl_staging_base</super_class>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<!-- name -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Name (FQDN)</column_label>
+    <element>name</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- cluster_ref -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Cluster MoRef</column_label>
+    <element>cluster_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- datacenter_ref -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Datacenter MoRef</column_label>
+    <element>datacenter_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- power_state -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Power State</column_label>
+    <element>power_state</element><internal_type>string</internal_type>
+    <max_length>30</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- connection_state -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Connection State</column_label>
+    <element>connection_state</element><internal_type>string</internal_type>
+    <max_length>30</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- cpu_count -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>CPU Count</column_label>
+    <element>cpu_count</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- cpu_cores -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>CPU Cores</column_label>
+    <element>cpu_cores</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- memory_size_gb -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Memory (GB)</column_label>
+    <element>memory_size_gb</element><internal_type>string</internal_type>
+    <max_length>20</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- model -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Model</column_label>
+    <element>model</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- vendor -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Vendor</column_label>
+    <element>vendor</element><internal_type>string</internal_type>
+    <max_length>100</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- bios_uuid -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>BIOS UUID</column_label>
+    <element>bios_uuid</element><internal_type>string</internal_type>
+    <max_length>100</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- os_type -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>OS Type</column_label>
+    <element>os_type</element><internal_type>string</internal_type>
+    <max_length>100</max_length><name>x_ftl_vcenter_etl_host_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

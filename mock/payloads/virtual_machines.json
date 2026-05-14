@@ -1,0 +1,123 @@
+[
+  {
+    "vm": "vm-100",
+    "name": "WEB-APP-01",
+    "power_state": "POWERED_ON",
+    "guest_OS": "RHEL_8_64",
+    "hardware_version": "vmx-19",
+    "identity": {
+      "name": "web-app-01.corp.example.com",
+      "bios_uuid": "42378462-a1b2-c3d4-e5f6-000000000001",
+      "instance_uuid": "50237abc-1234-5678-abcd-000000000001"
+    },
+    "placement": {
+      "host": "host-14",
+      "cluster": "domain-c8",
+      "resource_pool": "resgroup-9",
+      "datacenter": "datacenter-2",
+      "folder": "group-v4"
+    },
+    "cpu": {
+      "count": 4,
+      "cores_per_socket": 2,
+      "hot_add_enabled": false,
+      "hot_remove_enabled": false
+    },
+    "memory": {
+      "size_MiB": 8192,
+      "hot_add_enabled": true
+    },
+    "disks": [
+      {"key": 2000, "label": "Hard disk 1", "capacity": 107374182400, "backing": {"vmdk_file": "[DS-PROD-01] WEB-APP-01/WEB-APP-01.vmdk"}}
+    ],
+    "nics": [
+      {"key": 4000, "label": "Network adapter 1", "mac_address": "00:50:56:aa:00:01", "backing": {"distributed_port": "dvportgroup-100"}}
+    ],
+    "datastore_refs": ["datastore-10"]
+  },
+  {
+    "vm": "vm-101",
+    "name": "DB-ORACLE-01",
+    "power_state": "POWERED_ON",
+    "guest_OS": "RHEL_8_64",
+    "hardware_version": "vmx-19",
+    "identity": {
+      "name": "db-oracle-01.corp.example.com",
+      "bios_uuid": "42378462-a1b2-c3d4-e5f6-000000000002",
+      "instance_uuid": "50237abc-1234-5678-abcd-000000000002"
+    },
+    "placement": {
+      "host": "host-15",
+      "cluster": "domain-c8",
+      "resource_pool": "resgroup-9",
+      "datacenter": "datacenter-2",
+      "folder": "group-v4"
+    },
+    "cpu": {
+      "count": 8,
+      "cores_per_socket": 4,
+      "hot_add_enabled": true,
+      "hot_remove_enabled": false
+    },
+    "memory": {
+      "size_MiB": 32768,
+      "hot_add_enabled": true
+    },
+    "disks": [
+      {"key": 2000, "label": "Hard disk 1", "capacity": 107374182400},
+      {"key": 2001, "label": "Hard disk 2", "capacity": 1099511627776}
+    ],
+    "nics": [
+      {"key": 4000, "label": "Network adapter 1", "mac_address": "00:50:56:aa:00:02"}
+    ],
+    "datastore_refs": ["datastore-10", "datastore-11"]
+  },
+  {
+    "vm": "vm-102",
+    "name": "WIN-DC-01",
+    "power_state": "POWERED_ON",
+    "guest_OS": "WINDOWS_SERVER_2019",
+    "hardware_version": "vmx-17",
+    "identity": {
+      "name": "win-dc-01.corp.example.com",
+      "bios_uuid": "42378462-a1b2-c3d4-e5f6-000000000003",
+      "instance_uuid": "50237abc-1234-5678-abcd-000000000003"
+    },
+    "placement": {
+      "host": "host-14",
+      "cluster": "domain-c8",
+      "resource_pool": "resgroup-9",
+      "datacenter": "datacenter-2",
+      "folder": "group-v4"
+    },
+    "cpu": { "count": 2, "cores_per_socket": 2 },
+    "memory": { "size_MiB": 4096 },
+    "disks": [{"key": 2000, "label": "Hard disk 1", "capacity": 107374182400}],
+    "nics": [{"key": 4000, "label": "Network adapter 1", "mac_address": "00:50:56:aa:00:03"}],
+    "datastore_refs": ["datastore-10"]
+  },
+  {
+    "vm": "vm-103",
+    "name": "WEB-APP-02",
+    "power_state": "POWERED_OFF",
+    "guest_OS": "UBUNTU_64",
+    "hardware_version": "vmx-17",
+    "identity": {
+      "name": "web-app-02.corp.example.com",
+      "bios_uuid": "42378462-a1b2-c3d4-e5f6-000000000004",
+      "instance_uuid": "50237abc-1234-5678-abcd-000000000004"
+    },
+    "placement": {
+      "host": "host-16",
+      "cluster": "domain-c8",
+      "resource_pool": "resgroup-9",
+      "datacenter": "datacenter-2",
+      "folder": "group-v4"
+    },
+    "cpu": { "count": 4, "cores_per_socket": 2 },
+    "memory": { "size_MiB": 8192 },
+    "disks": [{"key": 2000, "label": "Hard disk 1", "capacity": 53687091200}],
+    "nics": [{"key": 4000, "label": "Network adapter 1", "mac_address": "00:50:56:aa:00:04"}],
+    "datastore_refs": ["datastore-11"]
+  }
+]

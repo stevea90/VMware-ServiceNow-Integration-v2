@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_staging_base
+  Scope: x_ftl_vcenter_etl
+
+  Abstract base table shared by all vCenter staging tables.
+  All staging tables extend this via sys_db_object.super_class.
+
+  Common fields:
+    moref        - vCenter MoRef (primary natural key, all object types)
+    run_id       - ETL run correlation ID
+    stg_state    - Processing state: ready | processing | processed | error | skipped
+    raw_payload  - Raw JSON from vCenter API (max 8000 chars)
+    last_seen    - Timestamp when vCenter API returned this object
+    error_msg    - Error detail if stg_state=error
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <access>public</access>
+    <caller_access/>
+    <client_scripts_loading_background>false</client_scripts_loading_background>
+    <create_access>false</create_access>
+    <create_access_controls/>
+    <delete_access>false</delete_access>
+    <extension_model>false</extension_model>
+    <is_extendable>true</is_extendable>
+    <label>vCenter ETL Staging Base</label>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <number_ref/>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_class_name>sys_db_object</sys_class_name>
+    <sys_name>x_ftl_vcenter_etl_staging_base</sys_name>
+    <sys_package display_value="vCenter ETL">x_ftl_vcenter_etl</sys_package>
+    <sys_policy/>
+    <sys_scope display_value="vCenter ETL">x_ftl_vcenter_etl</sys_scope>
+    <user_role/>
+    <ws_access_controls/>
+  </sys_db_object>
+</record_update>
+
+<!-- Field: moref -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>MoRef</column_label>
+    <default_value/>
+    <element>moref</element>
+    <element_reference/>
+    <internal_type display_value="String">string</internal_type>
+    <max_length>255</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <read_only>false</read_only>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <use_dependent_field>false</use_dependent_field>
+  </sys_dictionary>
+</record_update>
+
+<!-- Field: run_id -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>Run ID</column_label>
+    <default_value/>
+    <element>run_id</element>
+    <internal_type display_value="String">string</internal_type>
+    <max_length>50</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Field: stg_state -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>State</column_label>
+    <default_value>ready</default_value>
+    <element>stg_state</element>
+    <internal_type display_value="String">string</internal_type>
+    <max_length>20</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Field: raw_payload -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>Raw Payload</column_label>
+    <element>raw_payload</element>
+    <internal_type display_value="String">string</internal_type>
+    <max_length>8000</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Field: last_seen -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>Last Seen</column_label>
+    <element>last_seen</element>
+    <internal_type display_value="Date/Time">glide_date_time</internal_type>
+    <max_length>40</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Field: error_msg -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <column_label>Error Message</column_label>
+    <element>error_msg</element>
+    <internal_type display_value="String">string</internal_type>
+    <max_length>1000</max_length>
+    <name>x_ftl_vcenter_etl_staging_base</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Application Manifest: x_ftl_vcenter_etl
+  vCenter CMDB ETL (FT1)
+  Version: 1.0.0
+
+  This is the scoped application manifest record (sys_app).
+  Import this into ServiceNow to register the application.
+  All other artifacts reference this scope.
+
+  Deployment options:
+    A) Update Set:   Use deployment/update-set-guide.md
+    B) App Repo:     Use ServiceNow Application Repository
+    C) Source Control: Link Studio to Git repository
+-->
+<record_update table="sys_app">
+  <sys_app action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <application_menu_module/>
+    <author>Integration Architecture Team</author>
+    <build_date>2024-01-01</build_date>
+    <dependencies/>
+    <description>
+      Production-ready VMware vCenter to ServiceNow CMDB integration
+      using IntegrationHub ETL and Service Graph Connector framework
+      principles. Supports vCenter REST API v7/v8 via MID Server with
+      IRE-based CI identification and reconciliation.
+
+      Scope Objects:
+      - 11 Script Includes (ETL pipeline components)
+      - 9 Custom Tables (8 staging + log/run)
+      - 8 Transform Maps (one per CI type)
+      - 1 Scheduled Job (daily 00:00-02:00)
+      - 1 Business Rule (CI retirement cascade)
+      - 15 System Properties
+      - 1 Connection Alias definition
+      - Flow Designer flows (3)
+
+      Supported CI Types:
+      - cmdb_ci_vcenter (vCenter Instance)
+      - cmdb_ci_datacenter (Datacenter)
+      - cmdb_ci_cluster (Compute Cluster)
+      - cmdb_ci_esx_server (ESXi Host)
+      - cmdb_ci_vmware_instance (Virtual Machine)
+      - cmdb_ci_datastore (Datastore)
+      - cmdb_ci_storage_pool (Datastore Cluster)
+      - cmdb_ci_dvs_switch (Distributed vSwitch)
+    </description>
+    <enforce_license>false</enforce_license>
+    <hide_on_navigator>false</hide_on_navigator>
+    <internal_version>1</internal_version>
+    <license_definition/>
+    <logo/>
+    <name>vCenter CMDB ETL (FT1)</name>
+    <private>false</private>
+    <scope>x_ftl_vcenter_etl</scope>
+    <short_description>VMware vCenter → ServiceNow CMDB via IH ETL</short_description>
+    <sys_class_name>sys_app</sys_class_name>
+    <sys_name>vCenter CMDB ETL (FT1)</sys_name>
+    <sys_policy/>
+    <template>false</template>
+    <uninstallable>true</uninstallable>
+    <vendor>Integration Architecture Team</vendor>
+    <vendor_prefix>x_ftl</vendor_prefix>
+    <version>1.0.0</version>
+  </sys_app>
+</record_update>
+
+<!--
+  Application Roles
+-->
+<record_update table="sys_user_role">
+  <sys_user_role action="INSERT_OR_UPDATE">
+    <assignable_by/>
+    <can_delegate>false</can_delegate>
+    <description>Administrator role for vCenter ETL integration</description>
+    <elevated_privilege>false</elevated_privilege>
+    <grantable>false</grantable>
+    <includes_roles/>
+    <name>x_ftl_vcenter_etl.etl_admin</name>
+    <requires_subscription>false</requires_subscription>
+    <scoped_admin>false</scoped_admin>
+    <suffix>etl_admin</suffix>
+    <sys_name>x_ftl_vcenter_etl.etl_admin</sys_name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_user_role>
+</record_update>
+
+<record_update table="sys_user_role">
+  <sys_user_role action="INSERT_OR_UPDATE">
+    <assignable_by/>
+    <can_delegate>false</can_delegate>
+    <description>Read/run role for vCenter ETL integration users</description>
+    <elevated_privilege>false</elevated_privilege>
+    <grantable>false</grantable>
+    <includes_roles/>
+    <name>x_ftl_vcenter_etl.etl_user</name>
+    <requires_subscription>false</requires_subscription>
+    <scoped_admin>false</scoped_admin>
+    <suffix>etl_user</suffix>
+    <sys_name>x_ftl_vcenter_etl.etl_user</sys_name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_user_role>
+</record_update>

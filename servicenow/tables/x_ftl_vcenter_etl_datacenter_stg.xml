@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_datacenter_stg
+  Extends: x_ftl_vcenter_etl_staging_base
+  CMDB Target: cmdb_ci_datacenter
+  IRE Identifiers: moref (correlation_id), name
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <label>Datacenter Staging</label>
+    <name>x_ftl_vcenter_etl_datacenter_stg</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <super_class display_value="vCenter ETL Staging Base">x_ftl_vcenter_etl_staging_base</super_class>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Name</column_label>
+    <element>name</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datacenter_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>vCenter MoRef</column_label>
+    <element>vcenter_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datacenter_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_datastore_stg
+  Extends: x_ftl_vcenter_etl_staging_base
+  CMDB Target: cmdb_ci_datastore
+  IRE Identifiers: moref (correlation_id), name
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <label>Datastore Staging</label>
+    <name>x_ftl_vcenter_etl_datastore_stg</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <super_class>x_ftl_vcenter_etl_staging_base</super_class>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Name</column_label>
+    <element>name</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Type</column_label>
+    <element>type</element><internal_type>string</internal_type>
+    <max_length>30</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Capacity (GB)</column_label>
+    <element>capacity_gb</element><internal_type>string</internal_type>
+    <max_length>20</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Free Space (GB)</column_label>
+    <element>free_space_gb</element><internal_type>string</internal_type>
+    <max_length>20</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Accessible</column_label>
+    <element>accessible</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Datacenter MoRef</column_label>
+    <element>datacenter_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Host ref for host→datastore relationship -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Host MoRef</column_label>
+    <element>host_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<!-- Cluster ref for cluster→datastore relationship -->
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Cluster MoRef</column_label>
+    <element>cluster_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_datastore_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

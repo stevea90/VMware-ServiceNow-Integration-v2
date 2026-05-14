@@ -1,0 +1,28 @@
+[
+  {
+    "distributed_switch": "dvs-200",
+    "network": "dvportgroup-100",
+    "name": "DVS-FT1-PROD-01",
+    "type": "DISTRIBUTED_PORTGROUP",
+    "dvs_uuid": "50 3a 2f 5a-dc 65-11 ed-8f 1e-00 0c 29 dc e5 f1",
+    "datacenter": "datacenter-2",
+    "num_ports": 128,
+    "uplink_count": 2,
+    "mtu": 1500,
+    "version": "7.0.3",
+    "host_refs": ["host-14", "host-15", "host-16"]
+  },
+  {
+    "distributed_switch": "dvs-201",
+    "network": "dvportgroup-101",
+    "name": "DVS-FT1-DR-01",
+    "type": "DISTRIBUTED_PORTGROUP",
+    "dvs_uuid": "50 3a 2f 5a-dc 65-11 ed-8f 1e-00 0c 29 dc e5 f2",
+    "datacenter": "datacenter-3",
+    "num_ports": 64,
+    "uplink_count": 2,
+    "mtu": 9000,
+    "version": "7.0.3",
+    "host_refs": ["host-25"]
+  }
+]

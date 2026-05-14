@@ -1,0 +1,54 @@
+[
+  {
+    "datastore": "datastore-10",
+    "name": "DS-PROD-01-SAN-NFS",
+    "type": "NFS",
+    "capacity": 10995116277760,
+    "free_space": 5497558138880,
+    "accessible": true,
+    "multiple_host_access": true,
+    "thin_provisioning_supported": true,
+    "datacenter": "datacenter-2",
+    "host_ref": "host-14",
+    "cluster_ref": "domain-c8"
+  },
+  {
+    "datastore": "datastore-11",
+    "name": "DS-PROD-02-SAN-VMFS",
+    "type": "VMFS",
+    "capacity": 5497558138880,
+    "free_space": 1099511627776,
+    "accessible": true,
+    "multiple_host_access": true,
+    "thin_provisioning_supported": true,
+    "datacenter": "datacenter-2",
+    "host_ref": "host-15",
+    "cluster_ref": "domain-c8"
+  },
+  {
+    "datastore": "datastore-12",
+    "name": "DS-PROD-03-LOCAL",
+    "type": "VMFS",
+    "capacity": 1099511627776,
+    "free_space": 549755813888,
+    "accessible": true,
+    "multiple_host_access": false,
+    "thin_provisioning_supported": false,
+    "datacenter": "datacenter-2",
+    "host_ref": "host-16",
+    "cluster_ref": ""
+  },
+  {
+    "datastore": "datastore-30",
+    "name": "DS-DR-01-SAN-NFS",
+    "type": "NFS",
+    "capacity": 5497558138880,
+    "free_space": 4398046511104,
+    "accessible": true,
+    "multiple_host_access": true,
+    "thin_provisioning_supported": true,
+    "datacenter": "datacenter-3",
+    "host_ref": "host-25",
+    "cluster_ref": "domain-c20"
+  }
+]

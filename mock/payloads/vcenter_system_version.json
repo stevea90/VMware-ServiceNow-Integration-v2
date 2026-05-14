@@ -1,0 +1,11 @@
+{
+  "version": "7.0.3",
+  "build": "20150588",
+  "type": "VCSA",
+  "api_version": "7.0.3.0",
+  "hostname": "vcenter-ft1.corp.example.com",
+  "vcenter_id": "vcenter-ft1.corp.example.com",
+  "instance_uuid": "52b4c0c4-3a4d-11ed-a261-0242ac120002",
+  "product_line_id": "vpx",
+  "localized_version": "VMware vCenter Server 7.0 Update 3"
+}

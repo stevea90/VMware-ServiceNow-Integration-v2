@@ -1,0 +1,20 @@
+[
+  {
+    "datacenter": "datacenter-2",
+    "name": "DC-FT1-Primary",
+    "datastores": ["datastore-10", "datastore-11", "datastore-12"],
+    "networks": ["network-20", "network-21"],
+    "host_folder": "group-h3",
+    "vm_folder": "group-v4",
+    "datastore_folder": "group-s5"
+  },
+  {
+    "datacenter": "datacenter-3",
+    "name": "DC-FT1-DR",
+    "datastores": ["datastore-30", "datastore-31"],
+    "networks": ["network-30"],
+    "host_folder": "group-h6",
+    "vm_folder": "group-v7",
+    "datastore_folder": "group-s8"
+  }
+]

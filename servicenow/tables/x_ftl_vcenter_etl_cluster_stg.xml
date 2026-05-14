@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Table: x_ftl_vcenter_etl_cluster_stg
+  Extends: x_ftl_vcenter_etl_staging_base
+  CMDB Target: cmdb_ci_cluster
+  IRE Identifiers: moref (correlation_id), name
+-->
+<record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <label>Cluster Staging</label>
+    <name>x_ftl_vcenter_etl_cluster_stg</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <super_class>x_ftl_vcenter_etl_staging_base</super_class>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_db_object>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Name</column_label>
+    <element>name</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_cluster_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Datacenter MoRef</column_label>
+    <element>datacenter_ref</element><internal_type>string</internal_type>
+    <max_length>255</max_length><name>x_ftl_vcenter_etl_cluster_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>HA Enabled</column_label>
+    <element>ha_enabled</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_cluster_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>DRS Enabled</column_label>
+    <element>drs_enabled</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_cluster_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>
+
+<record_update table="sys_dictionary">
+  <sys_dictionary action="INSERT_OR_UPDATE">
+    <active>true</active><column_label>Number of Hosts</column_label>
+    <element>num_hosts</element><internal_type>string</internal_type>
+    <max_length>10</max_length><name>x_ftl_vcenter_etl_cluster_stg</name>
+    <sys_package>x_ftl_vcenter_etl</sys_package><sys_scope>x_ftl_vcenter_etl</sys_scope>
+  </sys_dictionary>
+</record_update>

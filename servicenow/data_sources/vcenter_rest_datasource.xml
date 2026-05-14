@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Data Source Definition: vCenter REST API
+  Table: sys_data_source
+  Scope: x_ftl_vcenter_etl
+
+  This record defines the REST data source for IH ETL.
+  It is referenced by the ETL Data Source configuration in IntegrationHub.
+
+  MID Server: Required — all requests route through MID Server in FT1 domain.
+  Connection Alias: x_ftl_vcenter_etl.vcenter_conn
+  Format: JSON
+  HTTP Method: GET (auth uses POST to /api/session)
+
+  NOTE: In the ServiceNow UI, create this via:
+    Integration Hub > ETL > Data Sources > New
+  Then configure the Connection & Credential Alias pointing to vCenter.
+-->
+<record_update table="sys_data_source">
+  <sys_data_source action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <connection_alias>x_ftl_vcenter_etl.vcenter_conn</connection_alias>
+    <data_format>json</data_format>
+    <file_retrieval_method>REST</file_retrieval_method>
+    <format_options>{"root_element": "value", "json_path": "$.value[*]"}</format_options>
+    <http_method>GET</http_method>
+    <import_set_table_name>x_ftl_vcenter_etl_vm_stg</import_set_table_name>
+    <mid_server_id><!-- Set to MID Server sys_id at deploy time --></mid_server_id>
+    <name>vCenter REST API - Virtual Machines</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_class_name>sys_data_source</sys_class_name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <url>/api/vcenter/vm</url>
+  </sys_data_source>
+</record_update>
+
+<!--
+  Connection & Credential Alias Definition
+  Table: sys_connection_alias
+
+  This alias wraps the vCenter FQDN + credential.
+  Credential type: Basic Auth (username/password) or Bearer Token.
+-->
+<record_update table="sys_connection_alias">
+  <sys_connection_alias action="INSERT_OR_UPDATE">
+    <active>true</active>
+    <base_url>https://<!-- VCENTER_FQDN -->/</base_url>
+    <connection_url>https://<!-- VCENTER_FQDN -->/</connection_url>
+    <credential_attribute><!-- Set to credential record sys_id --></credential_attribute>
+    <default_credential/>
+    <name>x_ftl_vcenter_etl.vcenter_conn</name>
+    <scope>x_ftl_vcenter_etl</scope>
+    <short_description>VMware vCenter REST API - FT1 Domain</short_description>
+    <sys_class_name>sys_connection_alias</sys_class_name>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>connection_and_credential</type>
+  </sys_connection_alias>
+</record_update>
+
+<!--
+  System Properties
+  Required properties to configure at install time.
+-->
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.connection_alias</name>
+    <value>x_ftl_vcenter_etl.vcenter_conn</value>
+    <description>Connection &amp; Credential Alias name for vCenter REST API</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.mid_server</name>
+    <value><!-- MID_SERVER_NAME --></value>
+    <description>MID Server name for FT1 domain vCenter connectivity</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.vcenter_host</name>
+    <value><!-- VCENTER_FQDN --></value>
+    <description>vCenter FQDN or IP address</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.log_level</name>
+    <value>INFO</value>
+    <description>Log level: DEBUG | INFO | WARN | ERROR</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.discovery_source</name>
+    <value>vCenterETL</value>
+    <description>Discovery source name applied to all CI writes</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.page_size</name>
+    <value>200</value>
+    <description>Number of records per paginated API request</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>integer</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.max_retries</name>
+    <value>3</value>
+    <description>Maximum HTTP retry attempts with exponential backoff</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>integer</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.staleness_days</name>
+    <value>7</value>
+    <description>Days after which unseen CIs are marked stale/retired</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>integer</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.batch_size</name>
+    <value>50</value>
+    <description>Number of CI payloads per IRE batch</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>integer</type>
+  </sys_properties>
+</record_update>
+
+<record_update table="sys_properties">
+  <sys_properties action="INSERT_OR_UPDATE">
+    <name>x_ftl_vcenter_etl.notify_email</name>
+    <value></value>
+    <description>Email address for ETL failure notifications (leave blank to disable)</description>
+    <scope>x_ftl_vcenter_etl</scope>
+    <sys_package>x_ftl_vcenter_etl</sys_package>
+    <sys_scope>x_ftl_vcenter_etl</sys_scope>
+    <type>string</type>
+  </sys_properties>
+</record_update>
