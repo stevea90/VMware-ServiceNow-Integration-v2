@@ -1,8 +1,3 @@
 {
-  "mcpServers": {
-    "servicenow": {
-      "command": "node",
-      "args": ["/home/user/VMware-ServiceNow-Integration-v2/mcp/server.js"]
-    }
-  }
+  "enableAllProjectMcpServers": true
 }
