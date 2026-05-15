@@ -463,6 +463,7 @@ class Deployer {
 
         // 4. Script Includes
         head('Script Includes');
+        await this.cleanupDuplicateScriptIncludes();
         await this.ensureScriptIncludes();
 
         // 5. Properties
@@ -660,12 +661,35 @@ class Deployer {
 
     // ── Script Includes ──────────────────────────────────────────────────────
 
+    async cleanupDuplicateScriptIncludes() {
+        for (const si of SCRIPT_INCLUDES) {
+            const rows = await this.snc.getAll('sys_script_include',
+                `name=${si.name}`, 'sys_id,name,sys_updated_on');
+            if (rows.length <= 1) continue;
+
+            // Keep the most-recently-updated record, delete the rest
+            rows.sort((a, b) => (b.sys_updated_on > a.sys_updated_on ? 1 : -1));
+            head(`Dedup Script Includes: ${si.name} (${rows.length} copies → 1)`);
+            for (let i = 1; i < rows.length; i++) {
+                if (this.dryRun) { dry(`Would delete duplicate SI sys_id: ${rows[i].sys_id}`); continue; }
+                try {
+                    await this.snc.delete('sys_script_include', rows[i].sys_id);
+                    ok(`  Deleted duplicate (${rows[i].sys_id})`);
+                } catch (e) {
+                    fail(`  Could not delete duplicate (${rows[i].sys_id}): ${e.message}`);
+                }
+            }
+        }
+    }
+
     async ensureScriptIncludes() {
         for (const si of SCRIPT_INCLUDES) {
             const apiName = `${SCOPE_NAME}.${si.name}`;
 
+            // Check by name only — the scope join filter was unreliable and
+            // caused a new copy to be created on every run.
             const existing = await this.snc.get('sys_script_include',
-                `name=${si.name}^sys_scope.scope=${SCOPE_NAME}`, 'sys_id,name');
+                `name=${si.name}`, 'sys_id,name');
 
             if (existing) {
                 skip(`Script Include: ${si.name}`);
