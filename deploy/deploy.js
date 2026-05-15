@@ -171,6 +171,13 @@ class SNClient {
         return (await res.json()).result;
     }
 
+    async delete(table, sysId) {
+        const res = await fetch(`${this.base}/api/now/table/${table}/${sysId}`, {
+            method: 'DELETE', headers: this.headers
+        });
+        if (res.status !== 204 && !res.ok) throw new Error(`DELETE ${table}/${sysId}: HTTP ${res.status}`);
+    }
+
     /** Test credentials and connectivity */
     async validate() {
         const res = await fetch(`${this.base}/api/now/table/sys_properties?sysparm_limit=1`, {
@@ -439,7 +446,12 @@ class Deployer {
         head('Scoped Application');
         await this.ensureApp();
 
-        // 2. Tables
+        // 2. Remove any tables from previous failed runs that got auto-prefixed
+        //    by ServiceNow (e.g. x_63815_vcenter_0_x_ftl_vcenter_etl_*) so the
+        //    idempotency check in ensureTable() finds the right name next time.
+        await this.cleanupMisnamedTables();
+
+        // 3. Tables
         head('Custom Tables & Fields');
         await this.ensureTables();
 
@@ -491,6 +503,28 @@ class Deployer {
         }
     }
 
+    // ── Cleanup misnamed tables from prior failed runs ───────────────────────
+
+    async cleanupMisnamedTables() {
+        const expectedNames = new Set(TABLES.map(t => t.name));
+        // Find all tables whose name contains 'vcenter_etl' (catches both correct
+        // and any wrongly-prefixed names like x_63815_vcenter_0_x_ftl_vcenter_etl_*)
+        const rows = await this.snc.getAll('sys_db_object', 'nameLIKEvcenter_etl', 'sys_id,name');
+        const wrongOnes = rows.filter(r => !expectedNames.has(r.name));
+        if (wrongOnes.length === 0) return;
+
+        head('Cleanup: Removing misnamed tables from prior run');
+        for (const row of wrongOnes) {
+            if (this.dryRun) { dry(`Would delete misnamed table: ${row.name}`); continue; }
+            try {
+                await this.snc.delete('sys_db_object', row.sys_id);
+                ok(`Deleted: ${row.name}`);
+            } catch (e) {
+                fail(`Could not delete ${row.name}: ${e.message}`);
+            }
+        }
+    }
+
     // ── Tables & Fields ──────────────────────────────────────────────────────
 
     async ensureTables() {
@@ -517,13 +551,13 @@ class Deployer {
 
         if (this.dryRun) { dry(`CREATE table: ${tbl.name}`); return; }
 
-        // sys_package is intentionally omitted: the scoped app is created via
-        // sys_scope (not sys_app), so its sys_id is not a valid sys_package
-        // reference — passing it causes child-table creation to fail.
+        // sys_scope is intentionally omitted: when a sys_scope (not sys_app)
+        // record is passed, ServiceNow auto-prefixes the table name with the
+        // PDI developer scope (e.g. x_63815_vcenter_0_) instead of the
+        // intended x_ftl_ prefix.  Without sys_scope the name is taken as-is.
         const payload = {
             name:  tbl.name,
             label: tbl.label,
-            ...(this.scopeSysId ? { sys_scope: this.scopeSysId } : {}),
             ...(tbl.parent && this.tableSysIds[tbl.parent]
                 ? { super_class: this.tableSysIds[tbl.parent] }
                 : {})
@@ -556,7 +590,6 @@ class Deployer {
             column_label: field.column_label,
             max_length:   String(field.max_length || 255),
             active:       'true',
-            ...(this.scopeSysId && { sys_scope: this.scopeSysId }),
             ...(field.default_value !== undefined && { default_value: field.default_value })
         };
 
@@ -597,8 +630,7 @@ class Deployer {
                 element:      ext.element,
                 column_label: ext.column_label,
                 max_length:   String(ext.max_length || 255),
-                active:       'true',
-                ...(this.scopeSysId && { sys_scope: this.scopeSysId })
+                active:       'true'
             };
 
             try {
