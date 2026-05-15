@@ -517,17 +517,20 @@ class Deployer {
 
         if (this.dryRun) { dry(`CREATE table: ${tbl.name}`); return; }
 
-        // Use display-value mode so sys_scope and super_class are resolved by
-        // name rather than sys_id — avoids sys_package conflicts with inheritance.
+        // sys_package is intentionally omitted: the scoped app is created via
+        // sys_scope (not sys_app), so its sys_id is not a valid sys_package
+        // reference — passing it causes child-table creation to fail.
         const payload = {
-            name:      tbl.name,
-            label:     tbl.label,
-            sys_scope: SCOPE_NAME,
-            ...(tbl.parent ? { super_class: tbl.parent } : {})
+            name:  tbl.name,
+            label: tbl.label,
+            ...(this.scopeSysId ? { sys_scope: this.scopeSysId } : {}),
+            ...(tbl.parent && this.tableSysIds[tbl.parent]
+                ? { super_class: this.tableSysIds[tbl.parent] }
+                : {})
         };
 
         try {
-            const result = await this.snc.post('sys_db_object', payload, true);
+            const result = await this.snc.post('sys_db_object', payload);
             this.tableSysIds[tbl.name] = result.sys_id;
             ok(`Table: ${tbl.name}`);
             this.counts.created++;
@@ -645,7 +648,7 @@ class Deployer {
                 script:           script,
                 client_callable:  'false',
                 active:           'true',
-                ...(this.scopeSysId && { sys_scope: this.scopeSysId, sys_package: this.scopeSysId })
+                ...(this.scopeSysId && { sys_scope: this.scopeSysId })
             };
 
             try {
