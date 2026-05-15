@@ -1,0 +1,11 @@
+{
+  "name": "servicenow-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for ServiceNow Table API — used by Claude Code to interact with the PDI directly",
+  "type": "module",
+  "main": "server.js",
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
