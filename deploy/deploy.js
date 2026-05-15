@@ -155,7 +155,8 @@ class SNClient {
         });
         const body = await res.json();
         if (!res.ok) {
-            const msg = body?.error?.message || body?.error?.detail || `HTTP ${res.status}`;
+            const parts = [body?.error?.message, body?.error?.detail].filter(Boolean);
+            const msg   = parts.length ? parts.join(' — ') : `HTTP ${res.status}`;
             throw new Error(`POST ${table}: ${msg}`);
         }
         return body.result;
@@ -434,7 +435,7 @@ class Deployer {
         this.dryRun = dryRun;
         this.scopeSysId = null;   // sys_id of the scoped app record
         this.tableSysIds = {};    // tableName → sys_id cache
-        this.counts = { created: 0, skipped: 0, failed: 0 };
+        this.counts = { created: 0, skipped: 0, failed: 0, warned: 0 };
     }
 
     // ── Main entry point ────────────────────────────────────────────────────
@@ -528,11 +529,25 @@ class Deployer {
     // ── Tables & Fields ──────────────────────────────────────────────────────
 
     async ensureTables() {
-        // First pass: create all tables
-        for (const tbl of TABLES) {
+        // Pass 1: base tables (no parent) — must exist before children can reference them
+        for (const tbl of TABLES.filter(t => !t.parent)) {
             await this.ensureTable(tbl);
         }
-        // Second pass: create all fields (table sys_ids are now known)
+
+        // ServiceNow table DDL is applied asynchronously in the background after the
+        // sys_db_object record is written.  Wait before creating child tables so the
+        // parent's super_class reference resolves to a fully-committed record.
+        if (!this.dryRun) {
+            info('  (waiting 5s for base table DDL to commit before creating child tables...)');
+            await new Promise(r => setTimeout(r, 5000));
+        }
+
+        // Pass 2: child tables (extend base tables via super_class)
+        for (const tbl of TABLES.filter(t => t.parent)) {
+            await this.ensureTable(tbl);
+        }
+
+        // Pass 3: fields for every table
         for (const tbl of TABLES) {
             for (const field of tbl.fields) {
                 await this.ensureField(tbl.name, field);
@@ -555,13 +570,19 @@ class Deployer {
         // record is passed, ServiceNow auto-prefixes the table name with the
         // PDI developer scope (e.g. x_63815_vcenter_0_) instead of the
         // intended x_ftl_ prefix.  Without sys_scope the name is taken as-is.
-        const payload = {
-            name:  tbl.name,
-            label: tbl.label,
-            ...(tbl.parent && this.tableSysIds[tbl.parent]
-                ? { super_class: this.tableSysIds[tbl.parent] }
-                : {})
-        };
+        const payload = { name: tbl.name, label: tbl.label };
+
+        if (tbl.parent) {
+            // Re-fetch the parent's sys_id live from the API (not from the in-memory
+            // cache) to guarantee we're referencing the committed record.
+            const parentRec = await this.snc.get('sys_db_object', `name=${tbl.parent}`, 'sys_id');
+            if (!parentRec) {
+                fail(`Table ${tbl.name}: parent '${tbl.parent}' not found in sys_db_object`);
+                this.counts.failed++;
+                return;
+            }
+            payload.super_class = parentRec.sys_id;
+        }
 
         try {
             const result = await this.snc.post('sys_db_object', payload);
@@ -643,8 +664,11 @@ class Deployer {
                 ok(`${ext.table}.${ext.element}`);
                 this.counts.created++;
             } catch (e) {
-                fail(`${ext.table}.${ext.element}: ${e.message}`);
-                this.counts.failed++;
+                // CMDB tables (cmdb_ci_*) are often ACL-protected in PDIs and cannot
+                // be extended via REST.  Treat as a warning so it doesn't mask real
+                // failures — these fields can be added manually in Studio if needed.
+                console.log(`${C.yellow}  ⚠${C.reset} ${ext.table}.${ext.element}: ${e.message}`);
+                this.counts.warned++;
             }
         }
     }
@@ -822,11 +846,19 @@ class Deployer {
         info('═'.repeat(55));
         console.log(`  ${C.green}Created:${C.reset}  ${this.counts.created}`);
         console.log(`  ${C.yellow}Skipped:${C.reset}  ${this.counts.skipped}  (already existed)`);
+        if (this.counts.warned > 0)
+            console.log(`  ${C.yellow}Warned:${C.reset}   ${this.counts.warned}  (CMDB extensions — PDI ACL restriction, add manually if needed)`);
         console.log(`  ${C.red}Failed:${C.reset}   ${this.counts.failed}`);
         info('═'.repeat(55));
 
         if (this.counts.failed === 0) {
             console.log(`\n${C.bold}${C.green}  ✓ Deployment succeeded!${C.reset}\n`);
+            if (this.counts.warned > 0) {
+                console.log(`  ${C.yellow}Note:${C.reset} ${this.counts.warned} CMDB field extension(s) could not be created via REST.`);
+                console.log('  To add them manually: System Definition → Dictionary → New');
+                console.log('  Tables: cmdb_ci_esx_server, cmdb_ci_vmware_instance, cmdb_ci_vcenter,');
+                console.log('          cmdb_ci_cluster, cmdb_ci_dvs_switch, cmdb_ci_datastore\n');
+            }
             console.log('  Next steps:');
             console.log('  1. Configure Connection & Credential Alias in ServiceNow:');
             console.log('     Connections & Credentials → Aliases → x_ftl_vcenter_etl.vcenter_conn');
