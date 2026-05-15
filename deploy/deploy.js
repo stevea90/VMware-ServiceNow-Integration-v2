@@ -708,12 +708,12 @@ class Deployer {
 
             const script = fs.readFileSync(filePath, 'utf-8');
             const payload = {
-                name:             si.name,
-                api_name:         apiName,
-                script:           script,
-                client_callable:  'false',
-                active:           'true',
-                ...(this.scopeSysId && { sys_scope: this.scopeSysId })
+                name:            si.name,
+                api_name:        si.name,   // no scope prefix — SIs live in global scope
+                script:          script,
+                client_callable: 'false',
+                active:          'true',
+                access:          'public'   // callable from any scope / Background Scripts
             };
 
             try {
