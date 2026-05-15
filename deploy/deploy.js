@@ -433,8 +433,9 @@ class Deployer {
     constructor(client, dryRun = false) {
         this.snc    = client;
         this.dryRun = dryRun;
-        this.scopeSysId = null;   // sys_id of the scoped app record
-        this.tableSysIds = {};    // tableName → sys_id cache
+        this.scopeSysId     = null; // sys_id of the scoped app record
+        this.tableSysIds    = {};   // intended name → sys_id
+        this.tableActualNames = {}; // intended name → actual stored name (PDI may prefix it)
         this.counts = { created: 0, skipped: 0, failed: 0, warned: 0 };
     }
 
@@ -508,10 +509,14 @@ class Deployer {
 
     async cleanupMisnamedTables() {
         const expectedNames = new Set(TABLES.map(t => t.name));
-        // Find all tables whose name contains 'vcenter_etl' (catches both correct
-        // and any wrongly-prefixed names like x_63815_vcenter_0_x_ftl_vcenter_etl_*)
         const rows = await this.snc.getAll('sys_db_object', 'nameLIKEvcenter_etl', 'sys_id,name');
-        const wrongOnes = rows.filter(r => !expectedNames.has(r.name));
+        // Keep a row if its name IS an expected name OR ends with one (covers the
+        // PDI-prefixed variant x_63815_vcenter_0_x_ftl_vcenter_etl_* which we now
+        // handle via ENDSWITH lookups rather than deleting and re-creating).
+        const wrongOnes = rows.filter(r =>
+            !expectedNames.has(r.name) &&
+            !TABLES.some(t => r.name.endsWith(t.name))
+        );
         if (wrongOnes.length === 0) return;
 
         head('Cleanup: Removing misnamed tables from prior run');
@@ -540,9 +545,14 @@ class Deployer {
     }
 
     async ensureTable(tbl) {
-        const existing = await this.snc.get('sys_db_object', `name=${tbl.name}`, 'sys_id,name');
+        // PDI always stores tables with an auto-prefix (e.g. x_63815_vcenter_0_).
+        // Use ENDSWITH so we find the table on re-runs even if the stored name
+        // differs from the intended name.
+        const existing = await this.snc.get('sys_db_object',
+            `nameENDSWITH${tbl.name}`, 'sys_id,name');
         if (existing) {
-            this.tableSysIds[tbl.name] = existing.sys_id;
+            this.tableSysIds[tbl.name]     = existing.sys_id;
+            this.tableActualNames[tbl.name] = existing.name;
             skip(`Table: ${tbl.name}`);
             this.counts.skipped++;
             return;
@@ -550,16 +560,14 @@ class Deployer {
 
         if (this.dryRun) { dry(`CREATE table: ${tbl.name}`); return; }
 
-        // sys_scope and super_class are intentionally omitted.
-        // sys_scope: the PDI auto-prefixes table names regardless of whether
-        //   sys_scope is passed, mangling the name (e.g. x_63815_vcenter_0_
-        //   prepended).  Without it, the name is used as-is.
-        // super_class: PDI REST API blocks inheritance from just-created custom
-        //   tables ("Operation Failed").  BASE_FIELDS are inlined directly into
-        //   each staging table instead.
         try {
             const result = await this.snc.post('sys_db_object', { name: tbl.name, label: tbl.label });
             this.tableSysIds[tbl.name] = result.sys_id;
+            // Re-fetch by sys_id to get the actual stored name (PDI may have
+            // prepended its developer scope prefix).
+            const actual = await this.snc.get('sys_db_object',
+                `sys_id=${result.sys_id}`, 'sys_id,name');
+            this.tableActualNames[tbl.name] = actual?.name || tbl.name;
             ok(`Table: ${tbl.name}`);
             this.counts.created++;
         } catch (e) {
@@ -569,8 +577,12 @@ class Deployer {
     }
 
     async ensureField(tableName, field) {
+        // Always use the actual stored name so the sys_dictionary query matches
+        // what ServiceNow really has (the PDI-prefixed variant).
+        const actualName = this.tableActualNames[tableName] || tableName;
+
         const existing = await this.snc.get('sys_dictionary',
-            `name=${tableName}^element=${field.element}`, 'sys_id');
+            `name=${actualName}^element=${field.element}`, 'sys_id');
         if (existing) {
             this.counts.skipped++;
             return; // silent skip for fields — too noisy otherwise
@@ -579,7 +591,7 @@ class Deployer {
         if (this.dryRun) { dry(`  field: ${tableName}.${field.element}`); return; }
 
         const payload = {
-            name:         tableName,
+            name:         actualName,   // actual stored table name, not the intended one
             element:      field.element,
             column_label: field.column_label,
             max_length:   String(field.max_length || 255),
