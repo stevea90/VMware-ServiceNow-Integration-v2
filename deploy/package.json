@@ -1,0 +1,12 @@
+{
+  "name": "vcenter-etl-deployer",
+  "version": "1.0.0",
+  "description": "Automated deployment of the vCenter CMDB ETL integration to a ServiceNow PDI",
+  "main": "deploy.js",
+  "scripts": {
+    "deploy": "node deploy.js",
+    "check":  "node deploy.js --check"
+  },
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {}
+}
