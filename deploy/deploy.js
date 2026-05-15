@@ -220,12 +220,12 @@ const TABLES = [
         label: 'vCenter ETL Staging Base',
         fields: BASE_FIELDS
     },
-    // ── Object staging tables (extend base) ─────────────────────────────────
+    // ── Object staging tables (standalone — PDI REST API blocks super_class) ─
     {
         name:   'x_ftl_vcenter_etl_vcenter_stg',
         label:  'vCenter Instance Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',          column_label: 'Name',          internal_type: 'string', max_length: 255 },
             { element: 'vcenter_fqdn',  column_label: 'vCenter FQDN',  internal_type: 'string', max_length: 255 },
             { element: 'version',       column_label: 'Version',        internal_type: 'string', max_length: 50  },
@@ -237,8 +237,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_datacenter_stg',
         label:  'Datacenter Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',        column_label: 'Name',          internal_type: 'string', max_length: 255 },
             { element: 'vcenter_ref', column_label: 'vCenter MoRef', internal_type: 'string', max_length: 255 }
         ]
@@ -246,8 +246,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_cluster_stg',
         label:  'Cluster Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',           column_label: 'Name',            internal_type: 'string', max_length: 255 },
             { element: 'datacenter_ref', column_label: 'Datacenter MoRef',internal_type: 'string', max_length: 255 },
             { element: 'ha_enabled',     column_label: 'HA Enabled',      internal_type: 'string', max_length: 10  },
@@ -258,8 +258,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_host_stg',
         label:  'ESXi Host Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',             column_label: 'Name (FQDN)',       internal_type: 'string', max_length: 255 },
             { element: 'cluster_ref',      column_label: 'Cluster MoRef',     internal_type: 'string', max_length: 255 },
             { element: 'datacenter_ref',   column_label: 'Datacenter MoRef',  internal_type: 'string', max_length: 255 },
@@ -277,8 +277,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_vm_stg',
         label:  'Virtual Machine Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',                 column_label: 'Name',               internal_type: 'string', max_length: 255  },
             { element: 'instance_uuid',        column_label: 'Instance UUID',       internal_type: 'string', max_length: 100  },
             { element: 'bios_uuid',            column_label: 'BIOS UUID',           internal_type: 'string', max_length: 100  },
@@ -301,8 +301,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_datastore_stg',
         label:  'Datastore Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',           column_label: 'Name',            internal_type: 'string', max_length: 255 },
             { element: 'type',           column_label: 'Type',            internal_type: 'string', max_length: 30  },
             { element: 'capacity_gb',    column_label: 'Capacity (GB)',   internal_type: 'string', max_length: 20  },
@@ -316,8 +316,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_ds_cluster_stg',
         label:  'Datastore Cluster Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',           column_label: 'Name',            internal_type: 'string', max_length: 255 },
             { element: 'sdrs_enabled',   column_label: 'SDRS Enabled',    internal_type: 'string', max_length: 10  },
             { element: 'capacity_gb',    column_label: 'Capacity (GB)',   internal_type: 'string', max_length: 20  },
@@ -328,8 +328,8 @@ const TABLES = [
     {
         name:   'x_ftl_vcenter_etl_dvs_stg',
         label:  'Distributed vSwitch Staging',
-        parent: 'x_ftl_vcenter_etl_staging_base',
         fields: [
+            ...BASE_FIELDS,
             { element: 'name',           column_label: 'Name',            internal_type: 'string', max_length: 255  },
             { element: 'type',           column_label: 'Type',            internal_type: 'string', max_length: 50   },
             { element: 'dvs_uuid',       column_label: 'DVS UUID',        internal_type: 'string', max_length: 100  },
@@ -339,7 +339,7 @@ const TABLES = [
             { element: 'host_refs',      column_label: 'Host MoRefs',     internal_type: 'string', max_length: 2000 }
         ]
     },
-    // ── Log and Run tables (standalone, no parent) ───────────────────────────
+    // ── Log and Run tables (standalone) ─────────────────────────────────────
     {
         name:  'x_ftl_vcenter_etl_log',
         label: 'vCenter ETL Log',
@@ -529,25 +529,9 @@ class Deployer {
     // ── Tables & Fields ──────────────────────────────────────────────────────
 
     async ensureTables() {
-        // Pass 1: base tables (no parent) — must exist before children can reference them
-        for (const tbl of TABLES.filter(t => !t.parent)) {
+        for (const tbl of TABLES) {
             await this.ensureTable(tbl);
         }
-
-        // ServiceNow table DDL is applied asynchronously in the background after the
-        // sys_db_object record is written.  Wait before creating child tables so the
-        // parent's super_class reference resolves to a fully-committed record.
-        if (!this.dryRun) {
-            info('  (waiting 5s for base table DDL to commit before creating child tables...)');
-            await new Promise(r => setTimeout(r, 5000));
-        }
-
-        // Pass 2: child tables (extend base tables via super_class)
-        for (const tbl of TABLES.filter(t => t.parent)) {
-            await this.ensureTable(tbl);
-        }
-
-        // Pass 3: fields for every table
         for (const tbl of TABLES) {
             for (const field of tbl.fields) {
                 await this.ensureField(tbl.name, field);
@@ -566,26 +550,15 @@ class Deployer {
 
         if (this.dryRun) { dry(`CREATE table: ${tbl.name}`); return; }
 
-        // sys_scope is intentionally omitted: when a sys_scope (not sys_app)
-        // record is passed, ServiceNow auto-prefixes the table name with the
-        // PDI developer scope (e.g. x_63815_vcenter_0_) instead of the
-        // intended x_ftl_ prefix.  Without sys_scope the name is taken as-is.
-        const payload = { name: tbl.name, label: tbl.label };
-
-        if (tbl.parent) {
-            // Re-fetch the parent's sys_id live from the API (not from the in-memory
-            // cache) to guarantee we're referencing the committed record.
-            const parentRec = await this.snc.get('sys_db_object', `name=${tbl.parent}`, 'sys_id');
-            if (!parentRec) {
-                fail(`Table ${tbl.name}: parent '${tbl.parent}' not found in sys_db_object`);
-                this.counts.failed++;
-                return;
-            }
-            payload.super_class = parentRec.sys_id;
-        }
-
+        // sys_scope and super_class are intentionally omitted.
+        // sys_scope: the PDI auto-prefixes table names regardless of whether
+        //   sys_scope is passed, mangling the name (e.g. x_63815_vcenter_0_
+        //   prepended).  Without it, the name is used as-is.
+        // super_class: PDI REST API blocks inheritance from just-created custom
+        //   tables ("Operation Failed").  BASE_FIELDS are inlined directly into
+        //   each staging table instead.
         try {
-            const result = await this.snc.post('sys_db_object', payload);
+            const result = await this.snc.post('sys_db_object', { name: tbl.name, label: tbl.label });
             this.tableSysIds[tbl.name] = result.sys_id;
             ok(`Table: ${tbl.name}`);
             this.counts.created++;
